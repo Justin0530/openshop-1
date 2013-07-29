@@ -1,0 +1,5 @@
+<ul class="breadcrumb">
+   <?php foreach ($this->pages as $page):?>
+        <li><a href="<?php echo $page->getHref();?>"><?php echo $page->getLabel()?></a> <span class="divider">/</span></li>
+  <?php endforeach;?>
+</ul>

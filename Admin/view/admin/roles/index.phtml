@@ -1,0 +1,72 @@
+<ul class="breadcrumb">
+      <li><a href="#">系统管理</a> <span class="divider">/</span></li>
+      <li><a href="/admin/roles">角色管理</a> <span class="divider">/</span></li>
+      <li class="active">列表</li>
+</ul>
+<form class="form-inline">
+  <input type="text" class="input-small" placeholder="用户名">
+  <input type="text" class="input-medium" placeholder="邮箱">
+  <button type="submit" class="btn  btn-primary" id="search">查询</button>
+</form>
+<table class="table table-hover">
+	<thead>
+		<tr>
+			<th>序号</th>
+			<th>角色名</th>
+			<th>权限</th>
+		</tr>
+	</thead>
+	<tbody>
+
+	<?php foreach ($this->paginator as $data):?>
+		<tr>
+			<td><label class='checkbox inline' ><input type="checkbox" name="selectrow[]" value="<?php echo $data['id']?>" id="<?php echo $data['id']?>"><?php echo $data['id']?></label></td>
+			<td><?php echo $data['name']?></td>
+			<td>
+			<?php
+			    $str = "";
+                if(is_array($data['menus'])){
+                    foreach ($data['menus'] as $menu){
+                        $str .= $menu['label'] .",";
+                    }
+                }
+                
+                echo substr($str, 0,-1);
+			?>
+			</td>
+		</tr>
+	<?php endforeach;?>
+	</tbody>
+</table>
+<?php echo $this->paginationControl($this->paginator,'Elastic','admin/partials/control.phtml', array('route' => 'admin')); ?>  
+<div class="pull-right">
+<button type="button" class="btn btn-primary" id="add" >新增</button>
+<button type="button" class="btn btn-primary" id="edit">编辑</button>
+<button type="button" class="btn btn-primary" id="del">删除</button>
+</div>
+<div class="clearfix"></div>
+<script>
+$(function($){
+	$(":button[id='add']").click(function(){
+    	   location.href = "/admin/roles/add";
+    });
+
+	$(":button[id='edit']").click(function(){
+		var checks = "";
+		$(":checkbox[name='selectrow[]']").each(function(){
+		    if($(this).prop("checked")){
+		        checks += $(this).val() + ",";   
+			}
+		});
+		checks = checks.substr(0,checks.length-1);
+
+		if($.trim(checks)==''){
+			alert("请选择一个角色");
+			return false;
+		}else{
+			location.href = "/admin/roles/edit?id="+checks;
+		}
+	});
+	
+});
+</script>

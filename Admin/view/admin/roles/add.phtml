@@ -1,0 +1,97 @@
+<ul class="breadcrumb">
+      <li><a href="#">系统管理</a> <span class="divider">/</span></li>
+      <li><a href="/admin/roles">角色管理</a> <span class="divider">/</span></li>
+      <li><a href="/admin/roles/list">列表</a></li>
+</ul>
+<?php 
+$form = $this->form;
+$form->prepare();
+$form->setAttribute('action',$this->url('admin')."/roles/add");
+$form->setAttribute('method' ,'post');
+$form->setAttribute('class',"form-horizontal");
+?>
+<?php echo $this->form()->openTag($form)?>
+
+<fieldset>
+	<legend><?php echo $form->getLabel();?></legend>
+</fieldset>
+<?php  $name = $form->get('name');?>
+<div class="control-group">
+	<label class="control-label"><?php echo $name->getLabel()?></label>
+	<div class="controls">
+      <?php echo $this->forminput($name);?>
+    </div>
+</div>
+<div class="control-group">
+	<label class="control-label" for="inputEmail">权限</label>
+	<div class="controls" id="roles_controls">
+	    <?php foreach ($this->menus as $menu):?>
+            <div class="accordion-group">
+    			<div class="accordion-heading">
+    				<a class="accordion-toggle" data-toggle="collapse"
+    					data-parent="#accordion2" href="#<?php echo $menu['id'] ?>">
+    					<?php echo $menu['label']?>
+    				</a>
+    			</div>
+    			<div id="<?php echo $menu['id'] ?>" class="accordion-body collapse in">
+    				<div class="accordion-inner">
+    				<?php if(is_array($menu['childs'])):?>
+    				<table class="table table-hover" >
+                	<tbody>
+                	    <tr>
+                	    <?php 
+                	    $i=0;
+                	    foreach ($menu['childs'] as $child){
+                			echo "<td style='border:0px'><label class='checkbox inline' ><input type='checkbox' name='actions[]' value='".$child['id']."' />".$child['label']."</label></td>";
+                			$i++;
+                			if($i % 6 ==0){
+                                echo "</tr><tr>";
+                            }
+                        }
+                		?>
+                		</tr>
+                	</tbody>
+                    </table>
+                    <?php endif;?>
+    				</div>
+    			</div>
+
+    		</div>
+		<?php endforeach;?>
+	
+          <button type="button" class="btn btn-mini" id="selectall">全选</button>
+          <button type="button" class="btn btn-mini" id="unselect">取消</button>
+	</div>
+</div>
+
+<?php echo $this->formhidden( $form->get('security'))?>
+<div class="control-group">
+	<div class="controls">
+      <?php 
+        $save = $form->get('save');
+        $save->setAttribute('class','btn btn-primary pull-right');
+      ?>
+    <?php echo $this->formsubmit($save)?>
+    </div>
+</div>
+
+
+
+<?php echo $this->form()->closeTag()?>
+<script type="text/javascript">
+<!--
+$(function(){
+	$("#selectall").click(function(){
+	    $(":checkbox[name='actions[]']").each(function(){  
+	        $(this).prop("checked",true);
+	    });
+		});
+	$("#unselect").click(function(){
+	    $(":checkbox[name='actions[]']").each(function(){
+	        $(this).prop("checked",false);
+	    });
+		});
+});
+//-->
+</script>
+

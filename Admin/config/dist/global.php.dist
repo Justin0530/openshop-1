@@ -1,0 +1,107 @@
+<?php
+
+$dbMasterParams = array(
+	'database'  => 'zf2',
+	'username'  => 'user',
+	'password'  => '123456',
+	'hostname'  => '192.168.10.41',
+    'charset'   => 'utf-8',
+    'driver_options' => array(
+        PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
+        PDO::MYSQL_ATTR_INIT_COMMAND => "set names 'utf8'",
+    ),
+);
+
+
+$dbSlaveParams = array(
+	'database'  => 'zf2',
+	'username'  => 'user',
+	'password'  => '123456',
+	'hostname'  => '192.168.10.41',
+    'charset'   => 'utf-8',
+    'driver_options' => array(
+    		PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
+            PDO::MYSQL_ATTR_INIT_COMMAND => "set names 'utf8'",
+    ),
+);
+
+$cacheParams = array(
+    array(
+        'host'  => '192.168.10.244',
+        'port'  => '11211',
+        'weight'  => '50',
+    ),
+    array(
+		'host'  => '192.168.10.244',
+		'port'  => '11212',
+		'weight'  => '50',
+    ),
+    
+);
+
+return array(
+    'service_manager' => array(
+        'invokables' => array(
+            'email' => '\Email\Email',
+         ),
+        'factories' => array(
+            'SlaveAdapter' => function ($sm) use ($dbSlaveParams){
+                return new Zend\Db\Adapter\Adapter(array(
+                		'driver'    => 'pdo',
+                		'dsn'       => 'mysql:dbname='.$dbSlaveParams['database'].';host='.$dbSlaveParams['hostname'],
+                		'database'  => $dbSlaveParams['database'],
+                		'username'  => $dbSlaveParams['username'],
+                		'password'  => $dbSlaveParams['password'],
+                		'hostname'  => $dbSlaveParams['hostname'],
+                        'charset'  => $dbSlaveParams['charset'],
+                        'driver_options' => $dbSlaveParams['driver_options'],
+                ));
+            },
+            'CacheAdapter' => function ($sm) use ($cacheParams){
+                $memcachedOptions = new Zend\Cache\Storage\Adapter\MemcachedOptions();
+                $memcachedOptions->setServers($cacheParams);
+                $libOptions = array(
+                    array(Memcached::OPT_DISTRIBUTION, Memcached::DISTRIBUTION_CONSISTENT),
+                    array(Memcached::OPT_LIBKETAMA_COMPATIBLE, true),
+                );
+                $memcachedOptions->setLibOptions($libOptions);
+              return new Zend\Cache\Storage\Adapter\Memcached($memcachedOptions);  
+            },
+            'MasterSlaveAdapter' => function ($sm) use ($dbMasterParams){
+                $slaveAdapter = $sm->get('SlaveAdapter');
+                return new ZfcBase\Db\Adapter\MasterSlaveAdapter($slaveAdapter,array(
+                		'driver'    => 'pdo',
+                		'dsn'       => 'mysql:dbname='.$dbMasterParams['database'].';host='.$dbMasterParams['hostname'],
+                		'database'  => $dbMasterParams['database'],
+                		'username'  => $dbMasterParams['username'],
+                		'password'  => $dbMasterParams['password'],
+                		'hostname'  => $dbMasterParams['hostname'],
+                        'charset'  => $dbMasterParams['charset'],
+                        'driver_options' => $dbMasterParams['driver_options'],
+                ));
+            },
+            'session_save_handler' => function ($sm){
+                $cache = $sm->get('CacheAdapter');
+                return new \Zend\Session\SaveHandler\Cache($cache);
+            },
+            
+        ),
+    ),
+    
+    'session' => array(
+		'config' => array(
+				'class' => 'Zend\Session\Config\SessionConfig',
+				'options' => array(
+						'name' => 'ihaveu',
+				),
+		),
+		'save_handler' => 'session_save_handler',
+		'storage' => 'Zend\Session\Storage\SessionArrayStorage',
+		'validators' => array(
+				'Zend\Session\Validator\RemoteAddr',
+				'Zend\Session\Validator\HttpUserAgent',
+		),
+    ),
+   
+    
+);

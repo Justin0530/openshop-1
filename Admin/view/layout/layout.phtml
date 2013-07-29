@@ -1,0 +1,83 @@
+<?php echo $this->doctype(); ?>
+
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+    <?php echo $this->headTitle('Mall')->setSeparator(' - ')->setAutoEscape(false) ?>
+
+    <!-- Le styles -->
+    <?php //echo $this->headLink()->prependStylesheet('/css/bootstrap.min.css') ?>
+    <?php //echo $this->headLink()->prependStylesheet('/css/bootstrap-responsive.min.css') ?>
+    <link href="/css/bootstrap.min.css" media="screen" rel="stylesheet"
+	type="text/css">
+<link href="/css/bootstrap-responsive.min.css" media="screen"
+	rel="stylesheet" type="text/css">
+<!-- Scripts -->
+    <?php echo $this->headScript()->prependFile('/js/bootstrap.min.js')
+                                  ->prependFile('/js/jquery.min.js') ?>
+
+  </head>
+<style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      .sidebar-nav {
+        padding: 9px 0;
+      }
+
+      @media (max-width: 980px) {
+        /* Enable use of floated navbar text */
+        .navbar-text.pull-right {
+          float: none;
+          padding-left: 5px;
+          padding-right: 5px;
+        }
+      }
+    </style>
+<body>
+
+	<div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container-fluid">
+				<a class="btn btn-navbar" data-toggle="collapse"
+					data-target=".nav-collapse"> <span class="icon-bar"></span> <span
+					class="icon-bar"></span> <span class="icon-bar"></span>
+				</a> <a class="brand" href="<?php echo $this->url('admin') ?>">Ihaveu</a>
+				<div class="nav-collapse">
+            <?php 
+                $this->navigation('navigation')->menu()->setPartial('admin/partials/menu');
+                echo $this->navigation()->menu()->render();
+             ?>
+          </div>
+				<!--/.nav-collapse -->
+			</div>
+		</div>
+	</div>
+
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div class="span2">
+				<!--Sidebar content-->
+			<ul class="nav nav-tabs nav-stacked">
+              <li class="active"><a href="#">快速导航</a></li>
+              <li><a href="#">Profile</a></li>
+              <li><a href="#">Messages</a></li>
+            </ul>
+			</div>
+			<div class="span10">
+				<!--Body content-->
+                <?php echo $this->content; ?>
+                <hr>
+        		<footer >
+        			<p>&copy; 2013 - 2015 by OpenShop Technologies Ltd. All rights reserved.</p>
+        		</footer>
+			</div>
+		</div>
+	</div>
+
+	<!-- /container -->
+
+  <?php echo $this->inlineScript() ?>
+  </body>
+</html>

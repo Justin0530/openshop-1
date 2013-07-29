@@ -1,0 +1,94 @@
+<?php 
+$form = $this->add_form;
+$form->prepare();
+$form->setAttribute('action',$this->url('admin'));
+$form->setAttribute('method' ,'post');
+$form->setAttribute('class',"form-horizontal");
+?>
+<?php echo $this->form()->openTag($form)?>
+
+ <fieldset>
+    <legend><?php echo $form->getLabel();?></legend>
+  </fieldset>
+  <?php  $name = $form->get('name');?>
+  <div class="control-group">
+    <label class="control-label"><?php echo $name->getLabel()?></label>
+    <div class="controls">
+      <?php echo $this->forminput($name);?>
+    </div>
+  </div>
+ 
+ <?php  $password = $form->get('password');?>
+  <div class="control-group">
+    <label class="control-label" for="inputEmail"><?php echo $password->getLabel()?></label>
+    <div class="controls">
+      <?php echo $this->formpassword($password)?>
+    </div>
+  </div>
+    
+  <?php  $email = $form->get('email');?>
+  <div class="control-group">
+    <label class="control-label" for="inputEmail"><?php echo $email->getLabel()?></label>
+    <div class="controls">
+      <?php echo $this->formemail($email)?>
+    </div>    
+  </div>
+  
+  <?php  $true_name = $form->get('true_name');?>
+  <div class="control-group">
+    <label class="control-label" for="inputEmail"><?php echo $true_name->getLabel()?></label>
+    <div class="controls">
+      <?php echo $this->forminput($true_name)?>
+    </div>
+  </div>
+  
+  <?php  $departments = $form->get('departments');?>
+  <div class="control-group">
+      <label class="control-label" for="inputEmail"><?php echo $departments->getLabel()?></label>
+    <div class="controls">
+      <?php echo $this->formselect($departments)?>
+    </div>
+  </div>
+  
+  <div class="control-group">
+      <label class="control-label" for="inputEmail">角色</label>
+    <div class="controls" id="roles_controls">
+
+    </div>
+  </div>
+  
+  
+  <?php echo $this->formhidden( $form->get('security'))?>
+  <div class="control-group">
+    <div class="controls">
+      <?php 
+        $save = $form->get('save');
+        $save->setAttribute('class','btn btn-primary');
+      ?>
+    <?php echo $this->formsubmit($save)?>
+    </div>
+  </div>
+
+  
+  
+<?php echo $this->form()->closeTag()?>
+
+<script type="text/javascript">
+<!--
+$(function(){
+	$('#department_id').change(function(){
+	    if($(this).attr('selected',true)){
+		    var department_id = $(this).val();
+		    $.ajax({
+			    type:'GET',
+			    url:'/admin/admin/ajax?department_id='+department_id,
+			    dataType:'json',
+			    success:function(json){
+				    $('#roles_controls').html(json.pageHtml);
+			    }
+			    });
+	    }
+		});
+});
+//-->
+</script>

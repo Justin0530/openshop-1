@@ -1,0 +1,20 @@
+<?php
+return array(
+		'email' => array(
+				"active" => true,
+				"defaults" => array(
+						"layout_name" => "layout",
+						"from_email" => "chenliang2007@vip.sohu.com",
+						"from_name" => "openshop"
+				),
+				"emails" => array(
+						"support" => "chenliang2007@vip.sohu.com",
+						"admin" => "chenliang2007@vip.sohu.com"
+				),
+				'template_vars' => array(
+						"company" => "openshop.com",
+						"slogan" => "",
+						"baseUrl" => "http://www.openshop.com"
+				)
+		)
+);

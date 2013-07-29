@@ -1,0 +1,11 @@
+<?php if($this->menus):?>
+    <?php foreach ($this->menus as $menu):?>
+    <label class="checkbox inline">
+        <input type="checkbox" name="roles[]" value="<?php echo $menu->getMenuId()?>"><?php echo $menu->getMenuName()?>
+    </label>
+    <?php endforeach;?>
+<?php else:?>
+    <label class="checkbox inline">
+        没有记录
+    </label>
+<?php endif;?>
